@@ -16,8 +16,6 @@ public class GraphVisual extends Graph {
 	private static int c5 = 1000;
 	private ArrayList<Circle> nodes;
 	private ArrayList<Line> edges;
-	private double temperature;
-	private double dt;
 	private double nodeSizeScale;
 	private ArrayList<Color> nodeColors;
 
@@ -70,53 +68,6 @@ public class GraphVisual extends Graph {
 		return nodeSizeScale * nodeDegrees[i];
 	}
 
-	public void fruchtermanReingold(double width, double height) {
-		double deltaX, deltaY, C = 1.;
-		double k = C * Math.sqrt(width * height / size);
-		double dis[][] = new double[size][2];
-		for (int v = 0; v < size; v++) {
-			dis[v][0] = 0;
-			dis[v][1] = 0;
-			for (int u = 0; u < size; u++) {
-				if (v != u) {
-					deltaX = d(posX[v], posX[u]);
-					deltaY = d(posY[v], posY[u]);
-					dis[v][0] += norm(deltaX) * frFR(Math.abs(deltaX), k);
-					dis[v][1] += norm(deltaY) * frFR(Math.abs(deltaY), k);
-				}
-			}
-		}
-		for (int edge[] : connected) {
-			deltaX = d(posX[edge[0]], posX[edge[1]]);
-			deltaY = d(posY[edge[0]], posY[edge[1]]);
-			dis[edge[0]][0] -= norm(deltaX) * faFR(Math.abs(deltaX), k);
-			dis[edge[0]][1] -= norm(deltaY) * faFR(Math.abs(deltaY), k);
-			dis[edge[1]][0] += norm(deltaX) * faFR(Math.abs(deltaX), k);
-			dis[edge[1]][1] += norm(deltaY) * faFR(Math.abs(deltaY), k);
-		}
-		for (int v = 0; v < size; v++) {
-			posX[v] += norm(dis[v][0]) * Math.min(Math.abs(dis[v][0]), temperature);
-			posY[v] += norm(dis[v][1]) * Math.min(Math.abs(dis[v][1]), temperature);
-			// posX[v] = Math.min(width, Math.max(0, posX[v]));
-			// posY[v] = Math.min(height, Math.max(0, posY[v]));
-
-		}
-		fruchtermanReingoldCooldown(dt);
-	}
-
-	public void barycentricDraw() {
-
-	}
-
-	public void fruchtermanReingoldCooldown(double dt) {
-		if (temperature > dt)
-			temperature -= dt;
-	}
-
-	public void setdt(double dt) {
-		this.dt = dt;
-	}
-
 	public void initNodeColors() {
 		nodeColors = new ArrayList<Color>();
 		for (int i = 0; i < numberOfBlocks; i++) {
@@ -134,22 +85,11 @@ public class GraphVisual extends Graph {
 
 	public double d(double x1, double x2) {
 		double delta = x1 - x2;
-		// if (Math.abs(delta) > 0)
 		return delta;
-		// else
-		// return 0.0000001;
 	}
 
 	public double dist(double x1, double x2, double y1, double y2) {
 		return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-	}
-
-	public double frFR(double d, double k) {
-		return Math.pow(k, 2) / d;
-	}
-
-	public double faFR(double d, double k) {
-		return Math.pow(d, 2) / k;
 	}
 
 	public void clear() {
@@ -186,14 +126,6 @@ public class GraphVisual extends Graph {
 
 	public void addEdge(Line edge) {
 		edges.add(edge);
-	}
-
-	public double getTemperature() {
-		return temperature;
-	}
-
-	public void setTemperature(double temperature) {
-		this.temperature = temperature;
 	}
 
 	public double getNodeSizeScale() {

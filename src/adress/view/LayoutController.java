@@ -65,8 +65,6 @@ public class LayoutController {
 		graphVisual = new GraphVisual((int) numberOfBlocks.getValue(), (int) size.getValue(), alpha.getValue(),
 				(int) xMin.getValue(), (int) ers.getValue(), pane.getWidth(), pane.getHeight());
 		graphVisual.initNodeColors();
-		graphVisual.setTemperature(pane.getWidth() / 100);
-		graphVisual.setdt(10E-2d);
 		draw();
 	}
 
@@ -100,7 +98,6 @@ public class LayoutController {
 		graphVisual.setNT(GraphVisual.getC5());
 		graphVisual.addEdges(graphVisual.getNumberOfEdges());
 		graphVisual.springEmbedder(width, height);
-		// graphVisual.fruchtermanReingold(width, height);
 		drawNodes(graphVisual);
 		drawEdges(graphVisual);
 		pane.getChildren().addAll(edges);
