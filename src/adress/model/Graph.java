@@ -17,7 +17,7 @@ public class Graph {
 	protected double[] Err;
 	protected int ers;
 	protected SplittableRandom rand;
-	protected int NT;
+	protected int NT = 1000;
 	protected int numberOfEdges;
 	protected ArrayList<int[]> connected;
 
@@ -32,7 +32,6 @@ public class Graph {
 		System.out.println("set: size=" + size + " numOB=" + numberOfBlocks + " sOB=" + sizeOfBlock + " alpha=" + alpha
 				+ " Ers=" + ers);
 		graph = new boolean[size][size];
-		NT = 1000;
 		nodeDegrees = new double[size];
 		internalLagrangeMultipliers = new double[size];
 		externalLagrangeMultipliers = new double[size];
@@ -76,11 +75,10 @@ public class Graph {
 	public void monteCarlo() {
 		int i, j;
 		double theta;
-		int sizeTemp = numberOfBlocks * sizeOfBlock;
 		for (int k = 0; k < NT; k++) {
-			i = rand.nextInt(sizeTemp);
+			i = rand.nextInt(size);
 			while (true) {
-				j = rand.nextInt(sizeTemp);
+				j = rand.nextInt(size);
 				if (j != i)
 					break;
 			}

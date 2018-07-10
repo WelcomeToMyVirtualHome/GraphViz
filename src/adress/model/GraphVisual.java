@@ -9,11 +9,10 @@ import javafx.scene.shape.Line;
 public class GraphVisual extends Graph {
 	private double[] posX;
 	private double[] posY;
-	private static double c1 = 0.1;
-	private static double c2 = 0.002;
-	private static double c3 = 35;
-	private static double c4 = 0.05;
-	private static int c5 = 1000;
+	private double c1 = 0.1;
+	private double c2 = 0.002;
+	private double c3 = 35;
+	private double c4 = 0.05;
 	private ArrayList<Circle> nodes;
 	private ArrayList<Line> edges;
 	private double nodeSizeScale;
@@ -134,45 +133,5 @@ public class GraphVisual extends Graph {
 
 	public void setNodeSizeScale(double nodeSizeScale) {
 		this.nodeSizeScale = nodeSizeScale;
-	}
-
-	public static double getC1() {
-		return c1;
-	}
-
-	public static void setC1(double c1) {
-		GraphVisual.c1 = c1;
-	}
-
-	public static double getC2() {
-		return c2;
-	}
-
-	public static void setC2(double c2) {
-		GraphVisual.c2 = c2;
-	}
-
-	public static double getC3() {
-		return c3;
-	}
-
-	public static void setC3(double c3) {
-		GraphVisual.c3 = c3;
-	}
-
-	public static double getC4() {
-		return c4;
-	}
-
-	public static void setC4(double c4) {
-		GraphVisual.c4 = c4;
-	}
-
-	public static int getC5() {
-		return c5;
-	}
-
-	public static void setC5(int c5) {
-		GraphVisual.c5 = c5;
 	}
 }

@@ -95,7 +95,6 @@ public class LayoutController {
 		height = pane.getHeight();
 		graphVisual.monteCarlo();
 		graphVisual.findEdges();
-		graphVisual.setNT(GraphVisual.getC5());
 		graphVisual.addEdges(graphVisual.getNumberOfEdges());
 		graphVisual.springEmbedder(width, height);
 		drawNodes(graphVisual);
@@ -103,7 +102,7 @@ public class LayoutController {
 		pane.getChildren().addAll(edges);
 		pane.getChildren().addAll(nodes);
 	}
-	
+
 	public void drawNodes(GraphVisual graphVisual) {
 		int i = graphVisual.getNodes().size() - 1;
 		for (Circle node : graphVisual.getNodes()) {
@@ -117,6 +116,7 @@ public class LayoutController {
 			i--;
 		}
 	}
+
 	public void drawEdges(GraphVisual graphVisual) {
 		int i = 0;
 		for (int edge[] : graphVisual.getConnected()) {
