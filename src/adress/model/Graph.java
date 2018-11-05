@@ -29,8 +29,6 @@ public class Graph {
 		alpha = distrExp;
 		minimalNodeDegree = xMin;
 		ers = Ers;
-		System.out.println("set: size=" + size + " numOB=" + numberOfBlocks + " sOB=" + sizeOfBlock + " alpha=" + alpha
-				+ " Ers=" + ers);
 		graph = new boolean[size][size];
 		nodeDegrees = new double[size];
 		internalLagrangeMultipliers = new double[size];

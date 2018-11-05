@@ -148,7 +148,7 @@ public class LayoutController {
 	public void initSliders() {
 		sizeLabel.setText("Size = " + Integer.toString((int) size.getValue()));
 		numberOfBlocksLabel.setText("Blocks = " + Integer.toString((int) numberOfBlocks.getValue()));
-		alphaLabel.setText("alpha = " + Integer.toString((int) alpha.getValue()));
+		alphaLabel.setText("α  = " + Integer.toString((int) alpha.getValue()));
 		xMinLabel.setText("xMin = " + Integer.toString((int) xMin.getValue()));
 		ersLabel.setText("Ers = " + Integer.toString((int) ers.getValue()));
 
