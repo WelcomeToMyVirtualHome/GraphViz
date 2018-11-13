@@ -4,6 +4,10 @@ import adress.model.GraphVisual;
 import adress.model.Simulation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -35,13 +39,19 @@ public class LayoutController {
 	private Label sizeLabel;
 	@FXML
 	private Pane pane;
-
+	
+	@FXML
+	private LineChart<Number, Number> hamiltonianChart;
+	@FXML
+	private LineChart<Number, Number> histogramChart;
+	
 	private Simulation simulation;
 
 	@FXML
 	public void initialize() {
 		initSliders();
-		simulation = new Simulation(pane);
+		initCharts();
+		simulation = new Simulation(pane, hamiltonianChart, histogramChart);
 	}
 
 	@FXML
@@ -50,7 +60,32 @@ public class LayoutController {
 				(int) xMin.getValue(), (int) ers.getValue(), pane.getWidth(), pane.getHeight());
 		graphVisual.initNodeColors();
 		simulation.setGraph(graphVisual);
+		simulation.clearCharts();
 		simulation.draw();
+	}
+	
+	public void initCharts() {
+		NumberAxis axisX = (NumberAxis)hamiltonianChart.getXAxis();
+		axisX.setLabel("NT");
+		axisX.setAutoRanging(true);
+		axisX.setAnimated(false);
+		axisX.setForceZeroInRange(false);
+		
+		NumberAxis axisY = (NumberAxis)hamiltonianChart.getYAxis();	
+		axisY.setAutoRanging(true);
+		axisY.setAnimated(false);
+		axisY.setLabel("H");
+	
+		axisX = (NumberAxis)histogramChart.getXAxis();
+		axisX.setLabel("k");
+		axisX.setAnimated(false);
+		axisX.setAutoRanging(true);
+		axisX.setForceZeroInRange(false);
+		
+		axisY = (NumberAxis)histogramChart.getYAxis();	
+		axisY.setAutoRanging(true);
+		axisY.setAnimated(false);
+		axisY.setLabel("n");
 	}
 
 	public void initSliders() {

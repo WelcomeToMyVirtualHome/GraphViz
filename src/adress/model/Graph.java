@@ -21,6 +21,9 @@ public class Graph {
 	protected int NT = 1000;
 	protected int numberOfEdges;
 	protected List<int[]> connected;
+	private int[][] nodeDegreesHists;
+	private double h;
+
 
 	public Graph(Integer numOB, Integer sizeOB, Double distrExp, Integer xMin, Integer Ers) {
 		rand = new SplittableRandom(System.currentTimeMillis());
@@ -35,6 +38,8 @@ public class Graph {
 		internalLagrangeMultipliers = new double[size];
 		externalLagrangeMultipliers = new double[size];
 		Err = new double[size];
+		nodeDegreesHists = new int[numberOfBlocks][size];
+		h = 0;
 		for (boolean row[] : graph) {
 			for (boolean g : row) {
 				g = false;
@@ -89,13 +94,16 @@ public class Graph {
 			if (graph[i][j]) {
 				graph[i][j] = false;
 				graph[j][i] = false;
+				h -= theta;
 			} else {
 				if (rand.nextDouble() < Math.exp(theta)) {
 					graph[i][j] = true;
 					graph[j][i] = true;
+					h += theta;
 				}
 			}
 		}
+		
 	}
 
 	public void findEdges() {
@@ -114,13 +122,12 @@ public class Graph {
 		}
 	}
 
-	public void printNodeDegees() {
-		for (boolean[] b : graph) {
-			int sum = 0;
-			for (boolean i : b)
-				if (i)
-					sum++;
-			System.out.println(sum);
+	public void calculateNodeDegreesHist() {
+		for (int i = 0; i < numberOfBlocks; i++) {
+			for (int j = i * sizeOfBlock; j < (i + 1) * sizeOfBlock; j++) {
+				if(graph[i][j])
+					nodeDegreesHists[i][j]++;	
+			}
 		}
 	}
 
@@ -155,4 +162,17 @@ public class Graph {
 	public int getSizeOfBlock() {
 		return sizeOfBlock;
 	}
+
+	public double getHamiltonian() {
+		return h;
+	}
+	
+	public int[][] getNodeDegreesHist(){
+		return nodeDegreesHists;
+	}
+
+	public int getNumberOfBlocks() {
+		return numberOfBlocks;
+	}
+	
 }

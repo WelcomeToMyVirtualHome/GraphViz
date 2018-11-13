@@ -1,7 +1,12 @@
 package adress.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
 import javafx.scene.layout.Pane;
@@ -21,9 +26,23 @@ public class Simulation {
 	private Light.Spot light;
 	private Lighting lighting;
 
-	public Simulation(Pane pane) {
+	private LineChart<Number, Number> hamiltonianChart;
+	private LineChart<Number, Number> histogramChart;
+	private XYChart.Series<Number, Number> hamiltonianData;
+	private List<XYChart.Series<Number, Number>> histogramData;
+	private final int dataSeriesSize = 200;
+	private int count = 0;
+	private int x = 0;
+
+	public Simulation(Pane pane, LineChart<Number, Number> hamiltonianChart, LineChart<Number, Number> histogramChart) {
 		this.pane = pane;
+		this.hamiltonianChart = hamiltonianChart;
+		this.histogramChart = histogramChart;
 		initLighting();
+		hamiltonianData = new XYChart.Series<>();
+		hamiltonianData.setName("H");
+		histogramData = new ArrayList<>();	
+		
 	}
 
 	public void draw() {
@@ -35,60 +54,102 @@ public class Simulation {
 				if (startTime == -1) {
 					startTime = now;
 				}
+				setLineChartData();
 				reset();
 				update();
 			}
 		}.start();
 	}
 
-	public void reset() {
+	private void reset() {
 		pane.getChildren().clear();
 		nodes = new Group();
 		edges = new Group();
 	}
 
-	public void update() {
+	private void update() {
 		width = pane.getWidth();
 		height = pane.getHeight();
 		graph.monteCarlo();
 		graph.findEdges();
+		graph.calculateNodeDegreesHist();
 		graph.addEdges(graph.getNumberOfEdges());
 		graph.springEmbedder(width, height);
-		drawNodes(graph);
-		drawEdges(graph);
+		drawNodes();
+		drawEdges();
 		pane.getChildren().addAll(edges);
 		pane.getChildren().addAll(nodes);
 	}
 
-	public void drawNodes(GraphVisual graphVisual) {
-		int i = graphVisual.getNodes().size() - 1;
-		for (Circle node : graphVisual.getNodes()) {
-			node.setCenterX(graphVisual.getPosX()[i]);
-			node.setCenterY(graphVisual.getPosY()[i]);
-			node.setFill(graphVisual.getNodeColors().get(i / graphVisual.getSizeOfBlock()));
+	private void drawNodes() {
+		int i = graph.getNodes().size() - 1;
+		for (Circle node : graph.getNodes()) {
+			node.setCenterX(graph.getPosX()[i]);
+			node.setCenterY(graph.getPosY()[i]);
+			node.setFill(graph.getNodeColors().get(i / graph.getSizeOfBlock()));
 			node.setEffect(lighting);
-			graphVisual.setNodeSizeScale(1.);
-			node.setRadius(graphVisual.getNodeSize(i));
+			graph.setNodeSizeScale(1.);
+			node.setRadius(graph.getNodeSize(i));
 			nodes.getChildren().add(node);
 			i--;
 		}
 	}
 
-	public void drawEdges(GraphVisual graphVisual) {
+	private void drawEdges() {
 		int i = 0;
-		for (int edge[] : graphVisual.getConnected()) {
-			graphVisual.getEdges().get(i).setStartX(graphVisual.getPosX()[edge[0]]);
-			graphVisual.getEdges().get(i).setStartY(graphVisual.getPosY()[edge[0]]);
-			graphVisual.getEdges().get(i).setEndX(graphVisual.getPosX()[edge[1]]);
-			graphVisual.getEdges().get(i).setEndY(graphVisual.getPosY()[edge[1]]);
-			graphVisual.getEdges().get(i).setFill(Color.rgb(0, 0, 0, 1));
-			graphVisual.getEdges().get(i).setStrokeWidth(graphVisual.getNodeSizeSum(edge[0], edge[1]) / 25);
-			edges.getChildren().add(graphVisual.getEdges().get(i));
+		for (int edge[] : graph.getConnected()) {
+			graph.getEdges().get(i).setStartX(graph.getPosX()[edge[0]]);
+			graph.getEdges().get(i).setStartY(graph.getPosY()[edge[0]]);
+			graph.getEdges().get(i).setEndX(graph.getPosX()[edge[1]]);
+			graph.getEdges().get(i).setEndY(graph.getPosY()[edge[1]]);
+			graph.getEdges().get(i).setFill(Color.rgb(0, 0, 0, 1));
+			graph.getEdges().get(i).setStrokeWidth(graph.getNodeSizeSum(edge[0], edge[1]) / 25);
+			edges.getChildren().add(graph.getEdges().get(i));
 			i++;
 		}
 	}
 
-	public void initLighting() {
+	private void setLineChartData() {
+		hamiltonianData.getData().get(count).setXValue(x++);
+		hamiltonianData.getData().get(count).setYValue(graph.getHamiltonian());
+		count++;
+		if (count > dataSeriesSize - 1)
+			count = 0;
+		
+		
+		for(int i = 0; i < graph.getNumberOfBlocks(); i++) {
+			LogHist logHist = new LogHist(graph.getNodeDegreesHist()[i]);
+			for (int j = 0; j < logHist.getNbins(); j++) {
+				histogramData.get(i).getData().get(j).setXValue(logHist.getBins()[j]);
+				histogramData.get(i).getData().get(j).setYValue(logHist.getValues()[j]);
+			}
+		}
+	}
+
+	public void clearCharts() {
+		count = 0;
+		x = 0;
+		hamiltonianData.getData().clear();
+		hamiltonianChart.getData().clear();
+		for (int i = 0; i < dataSeriesSize; i++) {
+			hamiltonianData.getData().add(i, new XYChart.Data<Number, Number>(0,0));
+		}
+		hamiltonianChart.getData().add(hamiltonianData);
+	
+		histogramChart.getData().clear();
+		histogramData.clear();
+		for(int i = 0; i < graph.getNumberOfBlocks(); i++) {
+			XYChart.Series<Number,Number> series = new XYChart.Series<>();
+			for (int j = i * graph.getSizeOfBlock(); j < (i + 1) * graph.getSizeOfBlock(); j++) {
+				series.getData().add(new XYChart.Data<Number, Number>(0,0));
+			}
+//			series.nodeProperty().get().setStyle("-fx-stroke-width: 1px;");
+			histogramData.add(i,series);
+			histogramChart.getData().add(i,histogramData.get(i));
+		}
+	}
+
+	private void initLighting() {
 		light = new Light.Spot();
 		light.setX(0);
 		light.setY(0);

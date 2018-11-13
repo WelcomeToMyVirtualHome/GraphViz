@@ -18,7 +18,7 @@ public class GraphVisual extends Graph {
 	private List<Line> edges;
 	private double nodeSizeScale;
 	private List<Color> nodeColors;
-
+	
 	public GraphVisual(Integer numOB, Integer sizeOB, Double distrExp, Integer xMin, Integer Ers, double width,
 			double height) {
 		super(numOB, sizeOB, distrExp, xMin, Ers);
