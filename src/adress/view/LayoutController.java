@@ -2,11 +2,8 @@ package adress.view;
 
 import adress.model.GraphVisual;
 import adress.model.Simulation;
-import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -38,8 +35,6 @@ public class LayoutController {
 	private Label sizeLabel;
 	@FXML
 	private Pane pane;
-	@FXML
-	private Canvas canvas;
 
 	private Simulation simulation;
 
