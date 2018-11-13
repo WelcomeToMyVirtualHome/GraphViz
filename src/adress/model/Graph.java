@@ -2,6 +2,7 @@ package adress.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.SplittableRandom;
 
 public class Graph {
@@ -19,7 +20,7 @@ public class Graph {
 	protected SplittableRandom rand;
 	protected int NT = 1000;
 	protected int numberOfEdges;
-	protected ArrayList<int[]> connected;
+	protected List<int[]> connected;
 
 	public Graph(Integer numOB, Integer sizeOB, Double distrExp, Integer xMin, Integer Ers) {
 		rand = new SplittableRandom(System.currentTimeMillis());
@@ -127,7 +128,7 @@ public class Graph {
 		return numberOfEdges;
 	}
 
-	public ArrayList<int[]> getConnected() {
+	public List<int[]> getConnected() {
 		return connected;
 	}
 

@@ -1,6 +1,7 @@
 package adress.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -13,10 +14,10 @@ public class GraphVisual extends Graph {
 	private double c2 = 0.002;
 	private double c3 = 35;
 	private double c4 = 0.05;
-	private ArrayList<Circle> nodes;
-	private ArrayList<Line> edges;
+	private List<Circle> nodes;
+	private List<Line> edges;
 	private double nodeSizeScale;
-	private ArrayList<Color> nodeColors;
+	private List<Color> nodeColors;
 
 	public GraphVisual(Integer numOB, Integer sizeOB, Double distrExp, Integer xMin, Integer Ers, double width,
 			double height) {
@@ -74,7 +75,7 @@ public class GraphVisual extends Graph {
 		}
 	}
 
-	public ArrayList<Color> getNodeColors() {
+	public List<Color> getNodeColors() {
 		return nodeColors;
 	}
 
@@ -96,7 +97,7 @@ public class GraphVisual extends Graph {
 		edges.clear();
 	}
 
-	public ArrayList<Circle> getNodes() {
+	public List<Circle> getNodes() {
 		return nodes;
 	}
 
@@ -104,7 +105,7 @@ public class GraphVisual extends Graph {
 		nodes.add(node);
 	}
 
-	public ArrayList<Line> getEdges() {
+	public List<Line> getEdges() {
 		return edges;
 	}
 
