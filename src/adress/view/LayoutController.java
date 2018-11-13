@@ -1,6 +1,7 @@
 package adress.view;
 
 import adress.model.GraphVisual;
+import adress.model.Simulation;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,105 +45,21 @@ public class LayoutController {
 	@FXML
 	private Canvas canvas;
 
-	private Group nodes;
-	private Group edges;
-	private double width;
-	private double height;
-
-	private Light.Spot light;
-	private Lighting lighting;
-
-	private GraphVisual graphVisual;
+	private Simulation simulation;
 
 	@FXML
 	public void initialize() {
-		initLighting();
 		initSliders();
+		simulation = new Simulation(pane);
 	}
 
 	@FXML
 	private void handleButtonAction(ActionEvent event) {
-		graphVisual = new GraphVisual((int) numberOfBlocks.getValue(), (int) size.getValue(), alpha.getValue(),
+		GraphVisual graphVisual = new GraphVisual((int) numberOfBlocks.getValue(), (int) size.getValue(), alpha.getValue(),
 				(int) xMin.getValue(), (int) ers.getValue(), pane.getWidth(), pane.getHeight());
 		graphVisual.initNodeColors();
-		draw();
-	}
-
-	public void draw() {
-		new AnimationTimer() {
-			long startTime = -1;
-
-			@Override
-			public void handle(long now) {
-				if (startTime == -1) {
-					startTime = now;
-				}
-				double time = (now - startTime) / 1E9d;
-				reset();
-				update();
-			}
-		}.start();
-	}
-
-	public void reset() {
-		pane.getChildren().clear();
-		nodes = new Group();
-		edges = new Group();
-	}
-
-	public void update() {
-		width = pane.getWidth();
-		height = pane.getHeight();
-		graphVisual.monteCarlo();
-		graphVisual.findEdges();
-		graphVisual.addEdges(graphVisual.getNumberOfEdges());
-		graphVisual.springEmbedder(width, height);
-		drawNodes(graphVisual);
-		drawEdges(graphVisual);
-		pane.getChildren().addAll(edges);
-		pane.getChildren().addAll(nodes);
-	}
-
-	public void drawNodes(GraphVisual graphVisual) {
-		int i = graphVisual.getNodes().size() - 1;
-		for (Circle node : graphVisual.getNodes()) {
-			node.setCenterX(graphVisual.getPosX()[i]);
-			node.setCenterY(graphVisual.getPosY()[i]);
-			node.setFill(graphVisual.getNodeColors().get(i / graphVisual.getSizeOfBlock()));
-			node.setEffect(lighting);
-			graphVisual.setNodeSizeScale(1.);
-			node.setRadius(graphVisual.getNodeSize(i));
-			nodes.getChildren().add(node);
-			i--;
-		}
-	}
-
-	public void drawEdges(GraphVisual graphVisual) {
-		int i = 0;
-		for (int edge[] : graphVisual.getConnected()) {
-			graphVisual.getEdges().get(i).setStartX(graphVisual.getPosX()[edge[0]]);
-			graphVisual.getEdges().get(i).setStartY(graphVisual.getPosY()[edge[0]]);
-			graphVisual.getEdges().get(i).setEndX(graphVisual.getPosX()[edge[1]]);
-			graphVisual.getEdges().get(i).setEndY(graphVisual.getPosY()[edge[1]]);
-			graphVisual.getEdges().get(i).setFill(Color.rgb(0, 0, 0, 1));
-			graphVisual.getEdges().get(i).setStrokeWidth(graphVisual.getNodeSizeSum(edge[0], edge[1]) / 25);
-			edges.getChildren().add(graphVisual.getEdges().get(i));
-			i++;
-		}
-	}
-
-	public void initLighting() {
-		light = new Light.Spot();
-		light.setX(0);
-		light.setY(0);
-		light.setZ(100);
-		light.setPointsAtX(width);
-		light.setPointsAtY(height);
-		light.setPointsAtZ(-50);
-		light.setSpecularExponent(5.);
-		lighting = new Lighting();
-		lighting.setLight(light);
-		lighting.setSurfaceScale(1.);
+		simulation.setGraph(graphVisual);
+		simulation.draw();
 	}
 
 	public void initSliders() {
