@@ -4,8 +4,6 @@ import adress.model.GraphVisual;
 import adress.model.Simulation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
@@ -39,6 +37,11 @@ public class LayoutController {
 	private Label sizeLabel;
 	@FXML
 	private Pane pane;
+	@FXML
+	private Button pauseButton;
+	@FXML
+	private Button mcButton;
+
 	
 	@FXML
 	private LineChart<Number, Number> hamiltonianChart;
@@ -62,6 +65,16 @@ public class LayoutController {
 		simulation.setGraph(graphVisual);
 		simulation.clearCharts();
 		simulation.draw();
+	}
+	
+	@FXML
+	private void handlePauseButton(ActionEvent event) {
+		simulation.setPause(!simulation.isPause());
+	}
+	
+	@FXML
+	private void handleMcButton(ActionEvent event) {
+		simulation.setMc(!simulation.isMc());
 	}
 	
 	public void initCharts() {

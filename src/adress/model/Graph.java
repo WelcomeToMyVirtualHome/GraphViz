@@ -123,6 +123,10 @@ public class Graph {
 	}
 
 	public void calculateNodeDegreesHist() {
+		for(int[] row : nodeDegreesHists)
+			for(int val : row)
+				val = 0;
+		
 		for (int i = 0; i < numberOfBlocks; i++) {
 			for (int j = i * sizeOfBlock; j < (i + 1) * sizeOfBlock; j++) {
 				if(graph[i][j])

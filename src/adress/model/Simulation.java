@@ -33,6 +33,8 @@ public class Simulation {
 	private final int dataSeriesSize = 200;
 	private int count = 0;
 	private int x = 0;
+	
+	private boolean pause, mc;
 
 	public Simulation(Pane pane, LineChart<Number, Number> hamiltonianChart, LineChart<Number, Number> histogramChart) {
 		this.pane = pane;
@@ -42,7 +44,8 @@ public class Simulation {
 		hamiltonianData = new XYChart.Series<>();
 		hamiltonianData.setName("H");
 		histogramData = new ArrayList<>();	
-		
+		pause = true;
+		mc = true;	
 	}
 
 	public void draw() {
@@ -54,7 +57,7 @@ public class Simulation {
 				if (startTime == -1) {
 					startTime = now;
 				}
-				setLineChartData();
+				
 				reset();
 				update();
 			}
@@ -70,11 +73,16 @@ public class Simulation {
 	private void update() {
 		width = pane.getWidth();
 		height = pane.getHeight();
-		graph.monteCarlo();
 		graph.findEdges();
-		graph.calculateNodeDegreesHist();
+		if(mc) {
+			graph.monteCarlo();
+			graph.calculateNodeDegreesHist();
+			setLineChartData();
+		}
+		if(pause) {
+			graph.springEmbedder(width, height);
+		}
 		graph.addEdges(graph.getNumberOfEdges());
-		graph.springEmbedder(width, height);
 		drawNodes();
 		drawEdges();
 		pane.getChildren().addAll(edges);
@@ -134,8 +142,10 @@ public class Simulation {
 		for (int i = 0; i < dataSeriesSize; i++) {
 			hamiltonianData.getData().add(i, new XYChart.Data<Number, Number>(0,0));
 		}
+//		hamiltonianData.getNode().setStyle("-fx-stroke-width: 1px;");
 		hamiltonianChart.getData().add(hamiltonianData);
-	
+		hamiltonianChart.getData().get(0).getNode().setStyle("-fx-stroke-width: 1px;");
+		
 		histogramChart.getData().clear();
 		histogramData.clear();
 		for(int i = 0; i < graph.getNumberOfBlocks(); i++) {
@@ -143,9 +153,11 @@ public class Simulation {
 			for (int j = i * graph.getSizeOfBlock(); j < (i + 1) * graph.getSizeOfBlock(); j++) {
 				series.getData().add(new XYChart.Data<Number, Number>(0,0));
 			}
-//			series.nodeProperty().get().setStyle("-fx-stroke-width: 1px;");
+			
 			histogramData.add(i,series);
 			histogramChart.getData().add(i,histogramData.get(i));
+			histogramChart.getData().get(i).getNode().setStyle("-fx-stroke-width: 1px;");
+			
 		}
 	}
 
@@ -166,4 +178,21 @@ public class Simulation {
 	public void setGraph(GraphVisual graph) {
 		this.graph = graph;
 	}
+
+	public boolean isPause() {
+		return pause;
+	}
+
+	public void setPause(boolean pause) {
+		this.pause = pause;
+	}
+
+	public boolean isMc() {
+		return mc;
+	}
+
+	public void setMc(boolean mc) {
+		this.mc = mc;
+	}
+	
 }

@@ -33,7 +33,7 @@ public class LogHist {
 			for (Integer l : arr) {
 				if (l >= bins[i] && l < bins[i + 1]) {
 					values[i]++;
-					values[i] /= (Math.pow(z, i) * (z - 1) * nbins);
+					values[i] /= (Math.pow(z, i) * (z - 1));
 				}
 			}
 		}
