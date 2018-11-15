@@ -45,8 +45,6 @@ public class LayoutController {
 	
 	@FXML
 	private LineChart<Number, Number> hamiltonianChart;
-	@FXML
-	private LineChart<Number, Number> histogramChart;
 	
 	private Simulation simulation;
 
@@ -54,7 +52,7 @@ public class LayoutController {
 	public void initialize() {
 		initSliders();
 		initCharts();
-		simulation = new Simulation(pane, hamiltonianChart, histogramChart);
+		simulation = new Simulation(pane, hamiltonianChart);
 	}
 
 	@FXML
@@ -89,16 +87,6 @@ public class LayoutController {
 		axisY.setAnimated(false);
 		axisY.setLabel("H");
 	
-		axisX = (NumberAxis)histogramChart.getXAxis();
-		axisX.setLabel("k");
-		axisX.setAnimated(false);
-		axisX.setAutoRanging(true);
-		axisX.setForceZeroInRange(false);
-		
-		axisY = (NumberAxis)histogramChart.getYAxis();	
-		axisY.setAutoRanging(true);
-		axisY.setAnimated(false);
-		axisY.setLabel("n");
 	}
 
 	public void initSliders() {

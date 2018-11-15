@@ -1,8 +1,5 @@
 package adress.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.chart.LineChart;
@@ -27,23 +24,19 @@ public class Simulation {
 	private Lighting lighting;
 
 	private LineChart<Number, Number> hamiltonianChart;
-	private LineChart<Number, Number> histogramChart;
 	private XYChart.Series<Number, Number> hamiltonianData;
-	private List<XYChart.Series<Number, Number>> histogramData;
 	private final int dataSeriesSize = 200;
 	private int count = 0;
 	private int x = 0;
 	
 	private boolean pause, mc;
 
-	public Simulation(Pane pane, LineChart<Number, Number> hamiltonianChart, LineChart<Number, Number> histogramChart) {
+	public Simulation(Pane pane, LineChart<Number, Number> hamiltonianChart) {
 		this.pane = pane;
 		this.hamiltonianChart = hamiltonianChart;
-		this.histogramChart = histogramChart;
 		initLighting();
 		hamiltonianData = new XYChart.Series<>();
 		hamiltonianData.setName("H");
-		histogramData = new ArrayList<>();	
 		pause = true;
 		mc = true;	
 	}
@@ -57,7 +50,6 @@ public class Simulation {
 				if (startTime == -1) {
 					startTime = now;
 				}
-				
 				reset();
 				update();
 			}
@@ -124,15 +116,7 @@ public class Simulation {
 		if (count > dataSeriesSize - 1)
 			count = 0;
 		
-		
-		for(int i = 0; i < graph.getNumberOfBlocks(); i++) {
-			LogHist logHist = new LogHist(graph.getNodeDegreesHist()[i]);
-			for (int j = 0; j < logHist.getNbins(); j++) {
-				histogramData.get(i).getData().get(j).setXValue(logHist.getBins()[j]);
-				histogramData.get(i).getData().get(j).setYValue(logHist.getValues()[j]);
-			}
 		}
-	}
 
 	public void clearCharts() {
 		count = 0;
@@ -146,19 +130,6 @@ public class Simulation {
 		hamiltonianChart.getData().add(hamiltonianData);
 		hamiltonianChart.getData().get(0).getNode().setStyle("-fx-stroke-width: 1px;");
 		
-		histogramChart.getData().clear();
-		histogramData.clear();
-		for(int i = 0; i < graph.getNumberOfBlocks(); i++) {
-			XYChart.Series<Number,Number> series = new XYChart.Series<>();
-			for (int j = i * graph.getSizeOfBlock(); j < (i + 1) * graph.getSizeOfBlock(); j++) {
-				series.getData().add(new XYChart.Data<Number, Number>(0,0));
-			}
-			
-			histogramData.add(i,series);
-			histogramChart.getData().add(i,histogramData.get(i));
-			histogramChart.getData().get(i).getNode().setStyle("-fx-stroke-width: 1px;");
-			
-		}
 	}
 
 	private void initLighting() {
