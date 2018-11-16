@@ -21,7 +21,7 @@ public class GraphVisual extends Graph {
 	
 	public GraphVisual(Integer numOB, Integer sizeOB, Double distrExp, Integer xMin, Integer Ers, double width,
 			double height) {
-		super(numOB, sizeOB, distrExp, xMin, Ers);
+		super(numOB, (int) (sizeOB.doubleValue()/numOB), distrExp, xMin, Ers);
 		posX = new double[size];
 		posY = new double[size];
 		for (int i = 0; i < size; i++) {
